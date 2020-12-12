@@ -1,0 +1,12 @@
+{
+  "short_name": "Abey&Sheena",
+  "name": "Abey&Sheena",
+  "icons": [{
+    "src": "icon.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  }],
+  "start_url": "/?utm_source=homescreen",
+  "background_color": "#266063",
+  "theme_color": "#266063"
+}
