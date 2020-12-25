@@ -2,7 +2,7 @@
   "short_name": "Abey&Sheena",
   "name": "Abey&Sheena",
   "icons": [{
-    "src": "icon.png",
+    "src": "img/apple-touch-icon.png",
     "type": "image/png",
     "sizes": "192x192"
   }],

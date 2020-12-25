@@ -17,9 +17,10 @@
   <meta name="theme-color" content="#266063">
 
   <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 
   <!-- Place favicon.ico in the root directory -->
+  <link rel="icon" type="image/ico" href="/favicon.ico"/>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" />
 
@@ -30,12 +31,14 @@
       --primary-dark: #366921;
       --primary-medium: #daebc8;
       --golden: #E9DA93;
+      --animate-duration: 150ms;
     }
 
     html {
       color: #222;
       font-size: 1em;
       line-height: 1.4;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -76,6 +79,10 @@
       margin: 16px 0;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     .container {
       min-height: calc(100vh - 31px);
       position: relative;
@@ -90,7 +97,18 @@
       display: none;
     }
 
+    .hidden-sm-down {
+      display: block;
+    }
+
     /* save the date banner*/
+    .save_the_date_banner_image {
+      width: 100%;
+      background: url("img/abey_sheena.webp") no-repeat center;
+      background-size: cover;
+      height: 84vh;
+    }
+
     #save_the_date_banner {
       position: relative;
       background-color: var(--primary);
@@ -158,6 +176,7 @@
     #wedding_announcement  #wedding_info {
       color: var(--primary-dark);
       text-align: center;
+      position: relative;
     }
 
     #wedding_info .wedding_title, .wedding_date {
@@ -178,11 +197,27 @@
       font-size: 16px;
       line-height: 180%;
       margin-bottom: 24px;
+      max-height: 400px;
+      transition: all 250ms ease-out;
+      overflow: hidden;
+      transform: translateZ(0);
     }
 
     #wedding_info .wedding-live-btn {
       width: 50%;
       margin: 0 auto 24px auto;
+    }
+
+    #wedding_info .wedding-live-btn.active {
+      background-color: var(--primary);
+      color: white;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    #wedding_info .wedding-live-btn.active:hover {
+      box-shadow: 0 0.5em 0.5em -0.4em rgba(0,0,0, 0.25);
+      background-color: var(--primary-dark);
     }
 
     /* covid disclaimer */
@@ -231,11 +266,20 @@
     }
 
     @media (max-width:481px)  {
+      body {
+        background-color: #000000;
+      }
+      .wedding-live-btn {
+        font-size: 18px;
+      }
       .container{
         padding: 0 !important;
       }
       .show-only-sm-down {
         display: block;
+      }
+      .hidden-sm-down {
+        display: none !important;
       }
       section {
         padding: 0 16px;
@@ -243,7 +287,7 @@
       #save_the_date_banner {
         padding: 0;
         border-radius: 0;
-        height: 202px;
+        height: 60vh;
         margin-top: 0;
       }
       #save_the_date_banner  #save_the_date_text {
@@ -272,8 +316,10 @@
 </head>
 
 <body>
+<img src="img/abey_sheena.webp" class="hidden" alt="">
   <main class="container">
-    <section id="save_the_date_banner">
+    <div class="save_the_date_banner_image show-only-sm-down"></div>
+    <section id="save_the_date_banner" class="hidden-sm-down">
       <img src="img/plant.webp" class="plant_left" alt="">
       <img src="img/plant.webp" class="plant_right" alt="">
       <div id="save_the_date_text">
@@ -281,23 +327,22 @@
       </div>
     </section>
     <section id="wedding_announcement">
-      <div id="bride_groom_name">
+      <div id="bride_groom_name" class="hidden-sm-down">
         Abey <span class="text-golden">&</span> Sheena
       </div>
       <div id="wedding_info">
-        <div class="wedding_title">
+        <div class="wedding_title hidden-sm-down">
           ARE GETTING MARRIED!
         </div>
-        <div class="wedding_date">
+        <div class="wedding_date hidden-sm-down">
           ON SATURDAY <br>
           26 DECEMBER 2020 <br>
           AT 10:30 A.M.
         </div>
-        <button id="live-timer" class="btn btn-primary wedding-live-btn" disabled>Wedding count down starting...</button>
+        <button id="live-timer" class="btn btn-primary wedding-live-btn" disabled>Count down starting...</button>
       </div>
     </section>
-    <hr class="dotted-divider show-only-sm-down">
-    <section id="covid_disclaimer">
+    <section id="covid_disclaimer" class="hidden-sm-down">
       <p>
         Since we are obliged to observe the COVID-19 protocol, we are unable to gather all our beloved ones for the function.
       </p>
@@ -306,13 +351,14 @@
       </p>
     </section>
   </main>
-  <footer class="show-only-sm-down"></footer>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
   <script>
     var timer;
+    var liveTimer = document.querySelector('#live-timer');
+    var weddingDate = new Date("2020-12-26T10:30:00"); // wedding date and time
 
-    var weddingDate = new Date("2020-12-26T10:30:00");
     weddingDate.setDate(weddingDate.getDate());
 
     timer = setInterval(function() {
@@ -325,10 +371,23 @@
       var difference = dateEntered.getTime() - now.getTime();
 
       if (difference <= 0) {
-
         // Timer done
         clearInterval(timer);
-
+        var weddingDate = document.querySelector(".wedding_date")
+        weddingDate.style.marginBottom="0px"
+        weddingDate.style.maxHeight="0px"
+        setTimeout(() => {
+          liveTimer.classList.add("animate__animated", "animate__zoomOut")
+        }, 350)
+        setTimeout(()=>{
+          liveTimer.removeAttribute("disabled")
+          liveTimer.innerHTML = "WATCH LIVE"
+          liveTimer.classList.remove("animate__zoomOut")
+          liveTimer.classList.add("active", "animate__zoomIn")
+        },600)
+        liveTimer.addEventListener("click", function () {
+          window.open("https://youtu.be/w-fKydwqVy4")
+        })
       } else {
 
         var seconds = Math.floor(difference / 1000);
@@ -339,7 +398,7 @@
         hours %= 24;
         minutes %= 60;
         seconds %= 60;
-        document.querySelector('#live-timer').innerHTML = days + " DAYS • "+ hours + " HOURS • " + minutes + " MIN"
+        liveTimer.innerHTML = hours + " HOURS • " + minutes + " MIN • " + seconds + " SEC"
       }
     }
   </script>
